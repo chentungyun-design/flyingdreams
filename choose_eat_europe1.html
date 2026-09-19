@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">Choose Eat Care 🔮 | Smart & Warm Diet Matching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            200: '#a7f3d0',
+                            300: '#6ee7b7',
+                            400: '#34d399',
+                            500: '#10b981', // emerald-500
+                            600: '#059669',
+                        },
+                        warm: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b', // amber-500
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fafaf9; /* stone-50 */
+            color: #292524; /* stone-800 */
+        }
+        .vibe-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        .vibe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+        .vibe-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e7e5e4;
+            background-color: #fafaf9;
+            transition: all 0.2s ease;
+        }
+        .vibe-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .vibe-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .vibe-btn-primary {
+            background-color: #10b981;
+            color: white;
+        }
+        .vibe-btn-primary:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+        }
+        .vibe-btn-secondary {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .vibe-btn-secondary:hover {
+            background-color: #fde68a;
+            transform: translateY(-2px);
+        }
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border-bottom: 2px solid transparent;
+            color: #78716c;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            border-bottom-color: #10b981;
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        .animate-slide { animation: slideUp 0.5s ease-out forwards; }
+
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #10b981;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans relative overflow-x-hidden">
+
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-40">
+        <div class="absolute top-[-5%] left-[-5%] w-64 h-64 bg-brand-100 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-[10%] right-[-5%] w-80 h-80 bg-warm-100 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-stone-100 sticky top-0 z-40">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- Logo Section -->
+            <div class="flex items-center cursor-pointer" onclick="goHome()">
+                <!-- Fallback representation integrating user's image gallery link -->
+                <a href="https://postimg.cc/gallery/k7zzLPK" target="_blank" onclick="event.stopPropagation()" class="block h-10 md:h-12 hover:opacity-80 transition-opacity" title="View Choose Eat Care Logo Gallery">
+                    <img src="https://i.postimg.cc/7Zj4RVk7/chooseeatcare1.png" alt="Choose Eat Care Logo" class="h-full w-auto object-contain">
+                </a>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Language Selector -->
+                <select id="language-selector" class="bg-stone-50 border border-stone-200 text-stone-600 text-sm rounded-lg focus:ring-brand-500 focus:border-brand-500 p-1.5 outline-none transition-colors" onchange="app.changeLanguage(this.value)">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇹🇼 中文</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                </select>
+                
+                <button onclick="ui.showSettings()" class="text-stone-400 hover:text-brand-500 transition-colors p-2" title="Setup API" data-i18n="api_setup">
+                    ⚙️ API
+                </button>
+                <div id="user-info-header" class="hidden flex items-center space-x-3 ml-2">
+                    <span id="header-role-badge" class="px-2 py-1 bg-brand-50 text-brand-600 text-xs rounded-full font-medium"></span>
+                    <button onclick="app.showRoleSelection()" class="text-sm text-stone-500 hover:text-brand-500 transition-colors" data-i18n="switch_role">Switch Role</button>
+                    <button onclick="app.logout()" class="text-sm text-stone-500 hover:text-rose-500 transition-colors" data-i18n="logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-8 relative">
+        
+        <!-- Loading Overlay -->
+        <div id="loading-screen" class="absolute inset-0 z-50 bg-stone-50/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl min-h-[400px]">
+            <div class="loader mb-4 w-10 h-10 border-4"></div>
+            <p class="text-brand-600 font-medium" data-i18n="crystal_loading">Crystal ball is preparing...</p>
+        </div>
+
+        <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="vibe-card p-6 w-full max-w-md animate-slide">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-stone-800" data-i18n="settings_title">⚙️ System Settings</h3>
+                    <button onclick="ui.hideSettings()" class="text-stone-400 hover:text-stone-600">✕</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="settings_key_label">Gemini API Key</label>
+                        <input type="password" id="input-api-key" class="vibe-input text-sm" data-i18n-ph="settings_key_ph" placeholder="Enter your Gemini API Key...">
+                        <p class="text-xs text-stone-400 mt-1" data-i18n="settings_key_hint">Your key is stored locally in your browser (localStorage) and never uploaded to our servers.</p>
+                    </div>
+                    <button onclick="app.saveSettings()" class="vibe-btn vibe-btn-primary w-full" data-i18n="settings_save">Save Settings 🌿</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Role Selection Screen -->
+        <div id="view-role-selection" class="hidden animate-slide">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-brand-600 mb-2" data-i18n="welcome_title">Welcome to Choose Eat Care 🦋</h1>
+                <p class="text-stone-500" data-i18n="welcome_sub">Let your health journey take flight. Please choose your role in this healing universe.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="vibe-card p-6 text-center cursor-pointer border-2 border-transparent hover:border-brand-300" onclick="app.selectRole('user')">
+                    <div class="text-5xl mb-4">🥗</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2" data-i18n="role_user">General User</h3>
+                    <p class="text-sm text-stone-500" data-i18n="role_user_desc">Create a health profile, get personalized AI diet tips & dietitian-recommended recipes.</p>
+                </div>
+                
+                <div class="vibe-card p-6 text-center cursor-pointer border-2 border-transparent hover:border-amber-300" onclick="app.selectRole('dietitian')">
+                    <div class="text-5xl mb-4">👩‍⚕️</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2" data-i18n="role_diet">Professional Dietitian</h3>
+                    <p class="text-sm text-stone-500" data-i18n="role_diet_desc">Publish healthy recipes and articles. Use your expertise to warm and help others.</p>
+                </div>
+
+                <div class="vibe-card p-6 text-center cursor-pointer border-2 border-transparent hover:border-blue-300" onclick="app.selectRole('clinic')">
+                    <div class="text-5xl mb-4">🏥</div>
+                    <h3 class="text-xl font-bold text-stone-800 mb-2" data-i18n="role_clinic">Healthcare Clinic</h3>
+                    <p class="text-sm text-stone-500" data-i18n="role_clinic_desc">Register your clinic so patients needing care can easily find you.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-user-dashboard" class="hidden animate-fade">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800" data-i18n="user_greet">Good morning! Ready to heal today with healthy food? 🌿</h2>
+                    <p class="text-stone-500 text-sm mt-1" data-i18n="user_sub">Your personalized smart diet guide</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex space-x-2 border-b border-stone-200 mb-6 overflow-x-auto">
+                <button onclick="ui.switchUserTab('ai')" id="tab-btn-ai" class="tab-btn active whitespace-nowrap" data-i18n="tab_ai">🔮 AI Assessment</button>
+                <button onclick="ui.switchUserTab('profile')" id="tab-btn-profile" class="tab-btn whitespace-nowrap" data-i18n="tab_prof">📝 Health Profile</button>
+                <button onclick="ui.switchUserTab('recipes')" id="tab-btn-recipes" class="tab-btn whitespace-nowrap" data-i18n="tab_rec">🥗 Dietitian Recipes</button>
+                <button onclick="ui.switchUserTab('clinics')" id="tab-btn-clinics" class="tab-btn whitespace-nowrap" data-i18n="tab_clin">🏥 Partner Clinics</button>
+            </div>
+
+            <!-- Tab Content: AI Assessment -->
+            <div id="tab-ai" class="animate-slide">
+                <div class="vibe-card p-6 mb-6">
+                    <h3 class="font-bold text-brand-600 mb-4 flex items-center gap-2">
+                        <span class="text-xl">✨</span> 
+                        <span data-i18n="ai_ask">Tell the crystal ball how you feel or what you crave today</span>
+                    </h3>
+                    <textarea id="ai-input" class="vibe-input mb-4 h-24" data-i18n-ph="ai_ph" placeholder="e.g., I feel a bit tired today, craving a Currywurst for lunch, but I have high blood pressure... or Can I eat Pretzels if I have diabetes?"></textarea>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <p class="text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg inline-flex items-center gap-1" data-i18n="ai_warn">
+                            ⚠️ Disclaimer: AI suggestions are for reference only and do not substitute professional medical advice.
+                        </p>
+                        <button onclick="app.generateDietPlan()" class="vibe-btn vibe-btn-primary flex items-center gap-2 shrink-0">
+                            <span id="ai-btn-text" data-i18n="ai_btn_start">Start Smart Assessment</span>
+                            <div id="ai-btn-loader" class="loader hidden w-4 h-4 border-2 border-white border-top-transparent"></div>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ai-response-container" class="hidden vibe-card p-6 border-l-4 border-brand-400 bg-gradient-to-br from-white to-brand-50/30">
+                    <h3 class="font-bold text-stone-800 mb-4 flex items-center gap-2">
+                        <span class="text-xl">💌</span> 
+                        <span data-i18n="ai_reply_title">Gentle reply from the crystal ball</span>
+                    </h3>
+                    <div id="ai-response-content" class="prose prose-stone max-w-none text-sm leading-relaxed">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Profile Editor -->
+            <div id="tab-profile" class="hidden animate-slide">
+                <div class="vibe-card p-6">
+                    <h3 class="font-bold text-brand-600 mb-6 text-lg" data-i18n="prof_title">Your Personal Health Profile</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-2" data-i18n="prof_dis">Chronic Diseases (Optional)</label>
+                            <input type="text" id="prof-diseases" class="vibe-input text-sm" data-i18n-ph="prof_dis_ph" placeholder="e.g., Type 2 Diabetes, High Blood Pressure (comma separated)">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-2" data-i18n="prof_all">Allergies (Optional)</label>
+                            <input type="text" id="prof-allergies" class="vibe-input text-sm" data-i18n-ph="prof_all_ph" placeholder="e.g., Peanuts, Gluten, Dairy (comma separated)">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-stone-600 mb-2" data-i18n="prof_pref">Dietary Preferences</label>
+                            <input type="text" id="prof-preferences" class="vibe-input text-sm" data-i18n-ph="prof_pref_ph" placeholder="e.g., Low-carb, Vegan, Low-sodium">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-stone-600 mb-2" data-i18n="prof_notes">Other Notes & Feelings</label>
+                            <textarea id="prof-notes" class="vibe-input text-sm h-20" data-i18n-ph="prof_notes_ph" placeholder="e.g., I've been feeling quite tired easily lately..."></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="app.saveUserProfile()" class="vibe-btn vibe-btn-primary" data-i18n="prof_save">Save Health Profile 🌿</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Recipes -->
+            <div id="tab-recipes" class="hidden animate-slide">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-stone-800" data-i18n="rec_title">Explore Dietitian's Top Recipes</h3>
+                    <button onclick="app.loadPublicRecipes()" class="text-brand-500 hover:text-brand-600 text-sm flex items-center gap-1" data-i18n="refresh">🔄 Refresh</button>
+                </div>
+                <div id="public-recipes-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-full text-center text-stone-400 py-8" data-i18n="crystal_loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Tab Content: Clinics -->
+            <div id="tab-clinics" class="hidden animate-slide">
+                <div class="vibe-card p-4 mb-6 flex flex-col md:flex-row gap-4 items-end bg-brand-50/50">
+                    <div class="flex-grow w-full">
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_filter">Find Nearby Clinics (Region Filter)</label>
+                        <select id="clinic-city-filter" class="vibe-input text-sm">
+                            <option value="" data-i18n="clin_opt_all">All Regions</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Munich">Munich</option>
+                            <option value="Frankfurt">Frankfurt</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Cologne">Cologne</option>
+                            <option value="Paris">Paris</option>
+                            <option value="Amsterdam">Amsterdam</option>
+                            <option value="London">London</option>
+                            <option value="Other Regions" data-i18n="clin_opt_other">Other Regions</option>
+                        </select>
+                    </div>
+                    <button onclick="app.loadPublicClinics()" class="vibe-btn vibe-btn-secondary h-[42px] w-full md:w-auto shrink-0" data-i18n="clin_btn">Filter Clinics 🔍</button>
+                </div>
+                <div id="public-clinics-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-full text-center text-stone-400 py-8" data-i18n="crystal_loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dietitian Dashboard -->
+        <div id="view-dietitian-dashboard" class="hidden animate-fade">
+             <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800" data-i18n="diet_dash">Dietitian Workspace 👩‍⚕️</h2>
+                    <p class="text-stone-500 text-sm mt-1" data-i18n="diet_sub">Share your expertise and light up the path to health for those in need</p>
+                </div>
+                <button onclick="ui.showRecipeModal()" class="vibe-btn vibe-btn-primary text-sm flex items-center gap-1 shrink-0" data-i18n="diet_new">➕ Publish New Recipe</button>
+            </div>
+
+            <div id="modal-recipe-form" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+                <div class="vibe-card p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-slide">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-stone-800" data-i18n="recipe_form_title">📝 Write Healthy Recipe</h3>
+                        <button onclick="ui.hideRecipeModal()" class="text-stone-400 hover:text-stone-600">✕</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_title_label">Recipe Title *</label>
+                            <input type="text" id="recipe-title" class="vibe-input text-sm" data-i18n-ph="recipe_title_ph" placeholder="e.g., Diabetic-Friendly Low-Sugar Oatmeal">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_desc_label">Short Description</label>
+                            <input type="text" id="recipe-desc" class="vibe-input text-sm" data-i18n-ph="recipe_desc_ph" placeholder="A one-sentence highlight of this recipe...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_ing_label">Ingredients (comma separated)</label>
+                            <input type="text" id="recipe-ingredients" class="vibe-input text-sm" data-i18n-ph="recipe_ing_ph" placeholder="Oats 50g, Almond Milk 200ml, Chia Seeds...">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_tar_label">Target Diseases (for AI matching)</label>
+                                <input type="text" id="recipe-target" class="vibe-input text-sm" data-i18n-ph="recipe_tar_ph" placeholder="Diabetes, Weight Loss">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_av_label">Avoid for (Red Light Warning)</label>
+                                <input type="text" id="recipe-avoid" class="vibe-input text-sm" data-i18n-ph="recipe_av_ph" placeholder="Kidney Disease">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="recipe_cont_label">Detailed Steps & Nutritional Info *</label>
+                            <textarea id="recipe-content" class="vibe-input text-sm h-32" data-i18n-ph="recipe_cont_ph" placeholder="Write down the steps and some warm encouraging words..."></textarea>
+                        </div>
+                        
+                        <button onclick="app.saveRecipe()" class="vibe-btn vibe-btn-primary w-full" data-i18n="recipe_save">Publish Recipe 🦋</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vibe-card p-6">
+                <h3 class="font-bold text-brand-600 mb-4 text-lg" data-i18n="diet_list">Your Published Recipes</h3>
+                <div id="dietitian-recipes-list" class="space-y-4">
+                    <div class="text-center text-stone-400 py-4" data-i18n="crystal_loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinic Dashboard -->
+        <div id="view-clinic-dashboard" class="hidden animate-fade">
+             <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800" data-i18n="clin_dash">Clinic Management Dashboard 🏥</h2>
+                <p class="text-stone-500 text-sm mt-1" data-i18n="clin_sub">Register your local info and connect with patients needing long-term care</p>
+            </div>
+
+            <div class="vibe-card p-6 max-w-2xl mx-auto">
+                <h3 class="font-bold text-brand-600 mb-6 text-lg border-b border-stone-100 pb-2" data-i18n="clin_info_title">Clinic Information Setup</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_name">Clinic Name *</label>
+                        <input type="text" id="clinic-name" class="vibe-input text-sm" data-i18n-ph="clin_name_ph" placeholder="e.g., Wellness Family Clinic">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_region">Region (City) *</label>
+                        <select id="clinic-city" class="vibe-input text-sm">
+                            <option value="" data-i18n="clin_region_ph">Select Region</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Munich">Munich</option>
+                            <option value="Frankfurt">Frankfurt</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="Cologne">Cologne</option>
+                            <option value="Paris">Paris</option>
+                            <option value="Amsterdam">Amsterdam</option>
+                            <option value="London">London</option>
+                            <option value="Other Regions" data-i18n="clin_opt_other">Other Regions</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_addr">Detailed Address</label>
+                        <input type="text" id="clinic-address" class="vibe-input text-sm" data-i18n-ph="clin_addr_ph" placeholder="Full contact address">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_phone">Phone Number</label>
+                        <input type="text" id="clinic-phone" class="vibe-input text-sm" data-i18n-ph="clin_phone_ph" placeholder="+49 30 1234567">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_spec">Specialties / Services (comma separated)</label>
+                        <textarea id="clinic-specialties" class="vibe-input text-sm h-20" data-i18n-ph="clin_spec_ph" placeholder="e.g., Diabetes Care, Hypertension Control, Nutrition Counseling"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-stone-600 mb-1" data-i18n="clin_hours">Operating Hours</label>
+                        <input type="text" id="clinic-hours" class="vibe-input text-sm" data-i18n-ph="clin_hours_ph" placeholder="Mon-Fri 09:00-18:00">
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="app.saveClinicProfile()" class="vibe-btn vibe-btn-primary w-full md:w-auto" data-i18n="clin_save">Update Clinic Info 🌿</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-100 py-8 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <p class="text-stone-500 text-sm mb-2" data-i18n="footer1">Let your health take flight. Choose Eat Care guards your every meal 🌿</p>
+            <p class="text-stone-400 text-xs" data-i18n="footer2">Copyright 2026 Rachel Chen</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, addDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Multi-Language Dictionary ---
+        const dict = {
+            en: {
+                page_title: "Choose Eat Care 🔮 | AI-Powered Personalised Food and Health Management Assistant",
+                app_title: "Choose Eat Care",
+                switch_role: "Switch Role",
+                api_setup: "⚙️ API",
+                logout: "Logout",
+                settings_title: "⚙️ System Settings",
+                settings_key_label: "Gemini API Key",
+                settings_key_ph: "Enter your Gemini API Key...",
+                settings_key_hint: "Your key is stored locally in your browser (localStorage) and never uploaded to our servers.",
+                settings_save: "Save Settings 🌿",
+                crystal_loading: "AI Assistant is preparing...",
+                welcome_title: "Welcome to Choose Eat Care 🦋",
+                welcome_sub: "Let your health journey take flight. Please choose your role in this healing universe.",
+                role_user: "General User",
+                role_user_desc: "Create a health profile, get personalized AI diet tips & dietitian-recommended recipes.",
+                role_diet: "Professional Dietitian",
+                role_diet_desc: "Publish healthy recipes and articles. Use your expertise to warm and help others.",
+                role_clinic: "Healthcare Clinic",
+                role_clinic_desc: "Register your clinic so patients needing care can easily find you.",
+                user_greet: "What would you like to eat today?",
+                user_sub: "AI-Powered Personalised Food and Health Management Assistant.",
+                tab_ai: "🔮 AI Assessment",
+                tab_prof: "📝 Health Profile",
+                tab_rec: "🥗 Dietitian Recipes",
+                tab_clin: "🏥 Partner Clinics",
+                ai_ask: "Tell your AI Care Assistant about your health needs and today’s food choice",
+                ai_ph: "e.g., I feel a bit tired today, craving a Currywurst for lunch, but I have high blood pressure...",
+                ai_warn: "⚠️ Disclaimer: AI suggestions are for reference only and do not substitute professional medical advice.",
+                ai_btn_start: "Analyse My Food Choice",
+                ai_btn_loading: "AI Assistant is analyzing...",
+                ai_reply_title: "Personalised Food Risk Guidance",
+                prof_title: "Your Personal Health Profile",
+                prof_dis: "Chronic Diseases (Optional)",
+                prof_dis_ph: "e.g., Type 2 Diabetes, High Blood Pressure",
+                prof_all: "Allergies (Optional)",
+                prof_all_ph: "e.g., Peanuts, Gluten, Dairy",
+                prof_pref: "Dietary Preferences",
+                prof_pref_ph: "e.g., Low-carb, Vegan, Low-sodium",
+                prof_notes: "Other Notes & Feelings",
+                prof_notes_ph: "e.g., I've been feeling quite tired easily lately...",
+                prof_save: "Save Health Profile 🌿",
+                rec_title: "Explore Dietitian's Top Recipes",
+                refresh: "🔄 Refresh",
+                clin_filter: "Find Nearby Clinics (Region Filter)",
+                clin_opt_all: "All Regions",
+                clin_opt_other: "Other Regions",
+                clin_btn: "Filter Clinics 🔍",
+                diet_dash: "Dietitian Workspace 👩‍⚕️",
+                diet_sub: "Share your expertise and light up the path to health for those in need",
+                diet_new: "➕ Publish New Recipe",
+                diet_list: "Your Published Recipes",
+                recipe_form_title: "📝 Write Healthy Recipe",
+                recipe_title_label: "Recipe Title *",
+                recipe_title_ph: "e.g., Diabetic-Friendly Low-Sugar Oatmeal",
+                recipe_desc_label: "Short Description",
+                recipe_desc_ph: "A one-sentence highlight of this recipe...",
+                recipe_ing_label: "Ingredients (comma separated)",
+                recipe_ing_ph: "Oats 50g, Almond Milk 200ml, Chia Seeds...",
+                recipe_tar_label: "Target Diseases (for AI matching)",
+                recipe_tar_ph: "Diabetes, Weight Loss",
+                recipe_av_label: "Avoid for (Red Light Warning)",
+                recipe_av_ph: "Kidney Disease",
+                recipe_cont_label: "Detailed Steps & Nutritional Info *",
+                recipe_cont_ph: "Write down the steps and some warm encouraging words...",
+                recipe_save: "Publish Recipe 🦋",
+                clin_dash: "Clinic Management Dashboard 🏥",
+                clin_sub: "Register your local info and connect with patients needing long-term care",
+                clin_info_title: "Clinic Information Setup",
+                clin_name: "Clinic Name *",
+                clin_name_ph: "e.g., Wellness Family Clinic",
+                clin_region: "Region (City) *",
+                clin_region_ph: "Select Region",
+                clin_addr: "Detailed Address",
+                clin_addr_ph: "Full contact address",
+                clin_phone: "Phone Number",
+                clin_phone_ph: "+49 30 1234567",
+                clin_spec: "Specialties / Services (comma separated)",
+                clin_spec_ph: "e.g., Diabetes Care, Hypertension Control, Nutrition Counseling",
+                clin_hours: "Operating Hours",
+                clin_hours_ph: "Mon-Fri 09:00-18:00",
+                clin_save: "Update Clinic Info 🌿",
+                footer1: "Wishing you a comfortable and healthy day.",
+                footer2: "Copyright 2026 Rachel Chen",
+                prompt_lang: "English",
+                toast_save_settings: "Settings saved",
+                toast_login_req: "Please log in first",
+                toast_role_set: "Successfully registered as",
+                toast_fail_role: "Failed to set role",
+                toast_prof_up: "Health profile updated",
+                toast_fail_prof: "Failed to save profile",
+                toast_api_req: "Please setup Gemini API Key via the top right settings",
+                toast_ai_more: "Please tell us a bit more about how you feel or what you crave!",
+                toast_ai_done: "AI Assessment Complete",
+                toast_ai_fail: "The AI Assistant briefly lost connection... Check API Key or try again.",
+                toast_req_title: "Title and content are required",
+                toast_rec_pub: "Recipe published successfully",
+                toast_fail_pub: "Failed to publish",
+                toast_del_ok: "Deleted successfully",
+                toast_del_fail: "Delete failed",
+                toast_clin_req: "Name and Region are required",
+                toast_clin_ok: "Clinic info updated and published to platform",
+                toast_clin_fail: "Failed to save",
+                toast_conn_fail: "Connection failed",
+                lbl_ing: "Ingredients:",
+                lbl_good: "Good for:",
+                lbl_avoid: "Avoid:",
+                btn_delete: "Delete",
+                msg_no_rec: "No recipes published yet. Add your first one!",
+                msg_no_pub_rec: "No recipes published by dietitians yet 🌱",
+                msg_no_clin: "No partner clinics in this region yet 🏥",
+                msg_load_fail: "Failed to load"
+            },
+            zh: {
+                page_title: "Choose Eat Care 🔮 | AI 驅動的個人化飲食與健康管理助手",
+                app_title: "Choose Eat Care",
+                switch_role: "切換角色",
+                api_setup: "⚙️ API設定",
+                logout: "登出",
+                settings_title: "⚙️ 系統設定",
+                settings_key_label: "Gemini API 金鑰",
+                settings_key_ph: "輸入您的 Gemini API 金鑰...",
+                settings_key_hint: "您的金鑰僅儲存於瀏覽器中（localStorage），絕不會上傳至我們的伺服器。",
+                settings_save: "儲存設定 🌿",
+                crystal_loading: "AI 助手準備中...",
+                welcome_title: "歡迎來到 Choose Eat Care 🦋",
+                welcome_sub: "讓您的健康之旅起飛，請在這個療癒宇宙中選擇您的角色。",
+                role_user: "一般使用者",
+                role_user_desc: "建立健康檔案，獲取個人化AI飲食建議與營養師食譜。",
+                role_diet: "專業營養師",
+                role_diet_desc: "發布健康食譜與文章，用您的專業溫暖幫助他人。",
+                role_clinic: "醫療診所",
+                role_clinic_desc: "註冊您的診所，讓需要照護的病患能輕鬆找到您。",
+                user_greet: "今天想吃點什麼呢？",
+                user_sub: "AI 驅動的個人化飲食與健康管理助手",
+                tab_ai: "🔮 AI 評估",
+                tab_prof: "📝 健康檔案",
+                tab_rec: "🥗 營養師食譜",
+                tab_clin: "🏥 合作診所",
+                ai_ask: "告訴您的 AI 照護助手您的健康需求與今天的飲食選擇",
+                ai_ph: "例如：我今天覺得有點累，午餐想吃咖哩香腸，但我有高血壓...",
+                ai_warn: "⚠️ 免責聲明：AI 建議僅供參考，不能替代專業醫療建議。",
+                ai_btn_start: "分析我的飲食選擇",
+                ai_btn_loading: "AI 助手分析中...",
+                ai_reply_title: "個人化飲食風險指南",
+                prof_title: "您的個人健康檔案",
+                prof_dis: "慢性疾病 (選填)",
+                prof_dis_ph: "例如：第二型糖尿病、高血壓",
+                prof_all: "過敏原 (選填)",
+                prof_all_ph: "例如：花生、麩質、乳製品",
+                prof_pref: "飲食偏好",
+                prof_pref_ph: "例如：低碳水、純素、低鈉",
+                prof_notes: "其他備註與感受",
+                prof_notes_ph: "例如：最近很容易覺得疲倦...",
+                prof_save: "儲存健康檔案 🌿",
+                rec_title: "探索營養師精選食譜",
+                refresh: "🔄 重新整理",
+                clin_filter: "尋找附近診所 (地區篩選)",
+                clin_opt_all: "所有地區",
+                clin_opt_other: "其他地區",
+                clin_btn: "篩選診所 🔍",
+                diet_dash: "營養師工作區 👩‍⚕️",
+                diet_sub: "分享您的專業，為需要的人照亮健康之路",
+                diet_new: "➕ 發布新食譜",
+                diet_list: "您發布的食譜",
+                recipe_form_title: "📝 撰寫健康食譜",
+                recipe_title_label: "食譜標題 *",
+                recipe_title_ph: "例如：適合糖尿病的低糖燕麥粥",
+                recipe_desc_label: "簡短描述",
+                recipe_desc_ph: "用一句話介紹這道食譜...",
+                recipe_ing_label: "食材 (以逗號分隔)",
+                recipe_ing_ph: "燕麥 50g, 杏仁奶 200ml, 奇亞籽...",
+                recipe_tar_label: "適合疾病 (供AI比對)",
+                recipe_tar_ph: "糖尿病, 減重",
+                recipe_av_label: "應避免 (紅燈警告)",
+                recipe_av_ph: "腎臟病",
+                recipe_cont_label: "詳細步驟與營養資訊 *",
+                recipe_cont_ph: "寫下製作步驟，並加入一些溫暖鼓勵的話語...",
+                recipe_save: "發布食譜 🦋",
+                clin_dash: "診所管理儀表板 🏥",
+                clin_sub: "註冊您的在地資訊，與需要長期照護的病患連結",
+                clin_info_title: "診所資訊設定",
+                clin_name: "診所名稱 *",
+                clin_name_ph: "例如：健康家庭診所",
+                clin_region: "地區 (城市) *",
+                clin_region_ph: "選擇地區",
+                clin_addr: "詳細地址",
+                clin_addr_ph: "完整聯絡地址",
+                clin_phone: "聯絡電話",
+                clin_phone_ph: "+886 2 12345678",
+                clin_spec: "專長 / 服務項目 (以逗號分隔)",
+                clin_spec_ph: "例如：糖尿病照護、高血壓控制、營養諮詢",
+                clin_hours: "營業時間",
+                clin_hours_ph: "週一至週五 09:00-18:00",
+                clin_save: "更新診所資訊 🌿",
+                footer1: "祝您有舒適健康的一天。",
+                footer2: "版權所有 2026 Rachel Chen",
+                prompt_lang: "Traditional Chinese (zh-TW)",
+                toast_save_settings: "設定已儲存",
+                toast_login_req: "請先登入",
+                toast_role_set: "成功註冊為",
+                toast_fail_role: "角色設定失敗",
+                toast_prof_up: "健康檔案已更新",
+                toast_fail_prof: "檔案儲存失敗",
+                toast_api_req: "請透過右上角設定填寫 Gemini API 金鑰",
+                toast_ai_more: "請多告訴我們一點您今天的感受或想吃的東西！",
+                toast_ai_done: "AI 評估完成",
+                toast_ai_fail: "AI 助手短暫失去連線...請檢查 API 金鑰或再試一次。",
+                toast_req_title: "標題與內容為必填",
+                toast_rec_pub: "食譜發布成功",
+                toast_fail_pub: "發布失敗",
+                toast_del_ok: "刪除成功",
+                toast_del_fail: "刪除失敗",
+                toast_clin_req: "診所名稱與地區為必填",
+                toast_clin_ok: "診所資訊已更新並發布",
+                toast_clin_fail: "儲存失敗",
+                toast_conn_fail: "連線失敗",
+                lbl_ing: "食材：",
+                lbl_good: "適合：",
+                lbl_avoid: "避免：",
+                btn_delete: "刪除",
+                msg_no_rec: "尚未發布食譜，趕快新增第一篇吧！",
+                msg_no_pub_rec: "目前還沒有營養師發布食譜 🌱",
+                msg_no_clin: "此地區目前沒有合作診所 🏥",
+                msg_load_fail: "載入失敗"
+            },
+            es: {
+                page_title: "Choose Eat Care 🔮 | Emparejamiento de Dieta",
+                app_title: "Choose Eat Care",
+                switch_role: "Cambiar Rol",
+                api_setup: "⚙️ API",
+                logout: "Cerrar sesión",
+                settings_title: "⚙️ Configuración del Sistema",
+                settings_key_label: "Clave API de Gemini",
+                settings_key_ph: "Introduce tu Clave API de Gemini...",
+                settings_key_hint: "Tu clave se almacena localmente y nunca se sube a nuestros servidores.",
+                settings_save: "Guardar Configuración 🌿",
+                crystal_loading: "La bola de cristal se prepara...",
+                welcome_title: "Bienvenido a Choose Eat Care 🦋",
+                welcome_sub: "Deja que tu viaje de salud despegue. Elige tu rol en este universo curativo.",
+                role_user: "Usuario General",
+                role_user_desc: "Crea tu perfil de salud, obtén consejos de dieta con IA y recetas.",
+                role_diet: "Dietista Profesional",
+                role_diet_desc: "Publica recetas saludables. Usa tu experiencia para ayudar a otros.",
+                role_clinic: "Clínica de Salud",
+                role_clinic_desc: "Registra tu clínica para que los pacientes te encuentren fácilmente.",
+                user_greet: "¡Buenos días! ¿Listo para sanar hoy con comida sana? 🌿",
+                user_sub: "Tu guía de dieta inteligente personalizada",
+                tab_ai: "🔮 Evaluación IA",
+                tab_prof: "📝 Perfil de Salud",
+                tab_rec: "🥗 Recetas de Dietistas",
+                tab_clin: "🏥 Clínicas Asociadas",
+                ai_ask: "Cuéntale a la bola de cristal cómo te sientes o qué deseas hoy",
+                ai_ph: "Ej. Me siento cansado, tengo antojo de pizza, pero tengo colesterol alto...",
+                ai_warn: "⚠️ Aviso: Las sugerencias de IA son solo de referencia y no sustituyen el consejo médico.",
+                ai_btn_start: "Iniciar Evaluación Inteligente",
+                ai_btn_loading: "La bola de cristal está sintiendo...",
+                ai_reply_title: "Respuesta amable de la bola de cristal",
+                prof_title: "Tu Perfil de Salud Personal",
+                prof_dis: "Enfermedades Crónicas (Opcional)",
+                prof_dis_ph: "Ej. Diabetes, Hipertensión",
+                prof_all: "Alergias (Opcional)",
+                prof_all_ph: "Ej. Maní, Gluten, Lácteos",
+                prof_pref: "Preferencias Dietéticas",
+                prof_pref_ph: "Ej. Bajo en carbohidratos, Vegano, Bajo en sodio",
+                prof_notes: "Otras Notas y Sentimientos",
+                prof_notes_ph: "Ej. Me he sentido muy cansado últimamente...",
+                prof_save: "Guardar Perfil de Salud 🌿",
+                rec_title: "Explorar Mejores Recetas de Dietistas",
+                refresh: "🔄 Actualizar",
+                clin_filter: "Buscar Clínicas Cercanas (Filtro por Región)",
+                clin_opt_all: "Todas las Regiones",
+                clin_opt_other: "Otras Regiones",
+                clin_btn: "Filtrar Clínicas 🔍",
+                diet_dash: "Espacio del Dietista 👩‍⚕️",
+                diet_sub: "Comparte tu experiencia e ilumina el camino a la salud de quienes lo necesitan",
+                diet_new: "➕ Publicar Nueva Receta",
+                diet_list: "Tus Recetas Publicadas",
+                recipe_form_title: "📝 Escribir Receta Saludable",
+                recipe_title_label: "Título de la Receta *",
+                recipe_title_ph: "Ej. Avena baja en azúcar para diabéticos",
+                recipe_desc_label: "Breve Descripción",
+                recipe_desc_ph: "Un resumen de una oración de esta receta...",
+                recipe_ing_label: "Ingredientes (separados por comas)",
+                recipe_ing_ph: "Avena 50g, Leche de almendras 200ml...",
+                recipe_tar_label: "Enfermedades Objetivo (para IA)",
+                recipe_tar_ph: "Diabetes, Pérdida de Peso",
+                recipe_av_label: "Evitar para (Advertencia Roja)",
+                recipe_av_ph: "Enfermedad Renal",
+                recipe_cont_label: "Pasos Detallados e Info Nutricional *",
+                recipe_cont_ph: "Escribe los pasos y algunas palabras de aliento...",
+                recipe_save: "Publicar Receta 🦋",
+                clin_dash: "Panel de Gestión de Clínicas 🏥",
+                clin_sub: "Registra tu información local y conecta con pacientes",
+                clin_info_title: "Configuración de Información de Clínica",
+                clin_name: "Nombre de la Clínica *",
+                clin_name_ph: "Ej. Clínica Familiar de Bienestar",
+                clin_region: "Región (Ciudad) *",
+                clin_region_ph: "Seleccionar Región",
+                clin_addr: "Dirección Detallada",
+                clin_addr_ph: "Dirección de contacto completa",
+                clin_phone: "Número de Teléfono",
+                clin_phone_ph: "+34 91 1234567",
+                clin_spec: "Especialidades / Servicios",
+                clin_spec_ph: "Ej. Cuidado de Diabetes, Control de Hipertensión",
+                clin_hours: "Horario de Atención",
+                clin_hours_ph: "Lun-Vie 09:00-18:00",
+                clin_save: "Actualizar Info de Clínica 🌿",
+                footer1: "Deja que tu salud despegue. Choose Eat Care cuida tus comidas 🌿",
+                footer2: "Derechos de autor 2026 Rachel Chen",
+                prompt_lang: "Spanish",
+                toast_save_settings: "Configuración guardada",
+                toast_login_req: "Inicia sesión primero",
+                toast_role_set: "Registrado con éxito como",
+                toast_fail_role: "Fallo al establecer rol",
+                toast_prof_up: "Perfil de salud actualizado",
+                toast_fail_prof: "Fallo al guardar perfil",
+                toast_api_req: "Configura la clave API de Gemini en los ajustes",
+                toast_ai_more: "¡Cuéntanos un poco más sobre cómo te sientes o qué deseas!",
+                toast_ai_done: "Evaluación IA Completada",
+                toast_ai_fail: "La bola de cristal perdió conexión... Revisa la clave API.",
+                toast_req_title: "Título y contenido son obligatorios",
+                toast_rec_pub: "Receta publicada con éxito",
+                toast_fail_pub: "Fallo al publicar",
+                toast_del_ok: "Eliminado con éxito",
+                toast_del_fail: "Fallo al eliminar",
+                toast_clin_req: "Nombre y Región son obligatorios",
+                toast_clin_ok: "Info de clínica actualizada en la plataforma",
+                toast_clin_fail: "Fallo al guardar",
+                toast_conn_fail: "Conexión fallida",
+                lbl_ing: "Ingredientes:",
+                lbl_good: "Bueno para:",
+                lbl_avoid: "Evitar:",
+                btn_delete: "Eliminar",
+                msg_no_rec: "No hay recetas publicadas aún. ¡Agrega la primera!",
+                msg_no_pub_rec: "Aún no hay recetas publicadas por dietistas 🌱",
+                msg_no_clin: "No hay clínicas asociadas en esta región aún 🏥",
+                msg_load_fail: "Fallo al cargar"
+            },
+            de: {
+                page_title: "Choose Eat Care 🔮 | Smartes Ernährungs-Matching",
+                app_title: "Choose Eat Care",
+                switch_role: "Rolle wechseln",
+                api_setup: "⚙️ API",
+                logout: "Abmelden",
+                settings_title: "⚙️ Systemeinstellungen",
+                settings_key_label: "Gemini API-Schlüssel",
+                settings_key_ph: "Geben Sie Ihren Gemini API-Schlüssel ein...",
+                settings_key_hint: "Ihr Schlüssel wird lokal im Browser gespeichert und nie hochgeladen.",
+                settings_save: "Einstellungen speichern 🌿",
+                crystal_loading: "Kristallkugel bereitet sich vor...",
+                welcome_title: "Willkommen bei Choose Eat Care 🦋",
+                welcome_sub: "Lassen Sie Ihre Gesundheitsreise beginnen. Wählen Sie Ihre Rolle.",
+                role_user: "Normaler Benutzer",
+                role_user_desc: "Erstellen Sie ein Gesundheitsprofil, erhalten Sie KI-Tipps & Rezepte.",
+                role_diet: "Ernährungsberater",
+                role_diet_desc: "Veröffentlichen Sie gesunde Rezepte. Nutzen Sie Ihr Wissen, um anderen zu helfen.",
+                role_clinic: "Gesundheitsklinik",
+                role_clinic_desc: "Registrieren Sie Ihre Klinik, damit Patienten Sie leicht finden können.",
+                user_greet: "Guten Morgen! Bereit für gesundes Essen heute? 🌿",
+                user_sub: "Ihr persönlicher smarter Ernährungsratgeber",
+                tab_ai: "🔮 KI-Bewertung",
+                tab_prof: "📝 Gesundheitsprofil",
+                tab_rec: "🥗 Rezepte",
+                tab_clin: "🏥 Partnerkliniken",
+                ai_ask: "Sagen Sie der Kristallkugel, wie Sie sich fühlen oder worauf Sie Lust haben",
+                ai_ph: "Z.B. Ich fühle mich müde und habe Lust auf Currywurst, habe aber Bluthochdruck...",
+                ai_warn: "⚠️ Hinweis: KI-Vorschläge dienen nur als Referenz und ersetzen keinen medizinischen Rat.",
+                ai_btn_start: "Smarte Bewertung starten",
+                ai_btn_loading: "Kristallkugel spürt nach...",
+                ai_reply_title: "Sanfte Antwort der Kristallkugel",
+                prof_title: "Ihr persönliches Gesundheitsprofil",
+                prof_dis: "Chronische Krankheiten (Optional)",
+                prof_dis_ph: "Z.B. Typ-2-Diabetes, Bluthochdruck",
+                prof_all: "Allergien (Optional)",
+                prof_all_ph: "Z.B. Erdnüsse, Gluten, Milchprodukte",
+                prof_pref: "Ernährungspräferenzen",
+                prof_pref_ph: "Z.B. Low-Carb, Vegan, Natriumarm",
+                prof_notes: "Weitere Anmerkungen & Gefühle",
+                prof_notes_ph: "Z.B. Ich fühle mich in letzter Zeit oft müde...",
+                prof_save: "Profil speichern 🌿",
+                rec_title: "Top-Rezepte von Ernährungsberatern entdecken",
+                refresh: "🔄 Aktualisieren",
+                clin_filter: "Kliniken in der Nähe finden (Region filtern)",
+                clin_opt_all: "Alle Regionen",
+                clin_opt_other: "Andere Regionen",
+                clin_btn: "Kliniken filtern 🔍",
+                diet_dash: "Ernährungsberater-Bereich 👩‍⚕️",
+                diet_sub: "Teilen Sie Ihr Fachwissen und erhellen Sie den Weg zur Gesundheit",
+                diet_new: "➕ Neues Rezept veröffentlichen",
+                diet_list: "Ihre veröffentlichten Rezepte",
+                recipe_form_title: "📝 Gesundes Rezept schreiben",
+                recipe_title_label: "Rezepttitel *",
+                recipe_title_ph: "Z.B. Diabetikerfreundliche zuckerarme Haferflocken",
+                recipe_desc_label: "Kurzbeschreibung",
+                recipe_desc_ph: "Eine kurze Beschreibung dieses Rezepts...",
+                recipe_ing_label: "Zutaten (kommagetrennt)",
+                recipe_ing_ph: "Haferflocken 50g, Mandelmilch 200ml...",
+                recipe_tar_label: "Zielkrankheiten (für KI)",
+                recipe_tar_ph: "Diabetes, Gewichtsverlust",
+                recipe_av_label: "Vermeiden bei (Warnung)",
+                recipe_av_ph: "Nierenerkrankung",
+                recipe_cont_label: "Detaillierte Schritte & Nährwertangaben *",
+                recipe_cont_ph: "Schreiben Sie die Schritte und einige ermutigende Worte auf...",
+                recipe_save: "Rezept veröffentlichen 🦋",
+                clin_dash: "Klinik-Dashboard 🏥",
+                clin_sub: "Registrieren Sie Ihre lokalen Infos und verbinden Sie sich mit Patienten",
+                clin_info_title: "Klinik-Informationen einrichten",
+                clin_name: "Klinikname *",
+                clin_name_ph: "Z.B. Wellness Familienklinik",
+                clin_region: "Region (Stadt) *",
+                clin_region_ph: "Region auswählen",
+                clin_addr: "Detaillierte Adresse",
+                clin_addr_ph: "Vollständige Kontaktadresse",
+                clin_phone: "Telefonnummer",
+                clin_phone_ph: "+49 30 1234567",
+                clin_spec: "Fachgebiete / Dienstleistungen",
+                clin_spec_ph: "Z.B. Diabetesversorgung, Bluthochdruckkontrolle",
+                clin_hours: "Öffnungszeiten",
+                clin_hours_ph: "Mo-Fr 09:00-18:00",
+                clin_save: "Klinikinfo aktualisieren 🌿",
+                footer1: "Choose Eat Care wacht über jede Ihrer Mahlzeiten 🌿",
+                footer2: "Copyright 2026 Rachel Chen",
+                prompt_lang: "German",
+                toast_save_settings: "Einstellungen gespeichert",
+                toast_login_req: "Bitte zuerst anmelden",
+                toast_role_set: "Erfolgreich registriert als",
+                toast_fail_role: "Rolle konnte nicht festgelegt werden",
+                toast_prof_up: "Gesundheitsprofil aktualisiert",
+                toast_fail_prof: "Profil speichern fehlgeschlagen",
+                toast_api_req: "Bitte Gemini API-Schlüssel in den Einstellungen einrichten",
+                toast_ai_more: "Bitte erzählen Sie uns etwas mehr darüber, wie Sie sich fühlen!",
+                toast_ai_done: "KI-Bewertung abgeschlossen",
+                toast_ai_fail: "Verbindung verloren... API-Schlüssel prüfen.",
+                toast_req_title: "Titel und Inhalt erforderlich",
+                toast_rec_pub: "Rezept erfolgreich veröffentlicht",
+                toast_fail_pub: "Veröffentlichen fehlgeschlagen",
+                toast_del_ok: "Erfolgreich gelöscht",
+                toast_del_fail: "Löschen fehlgeschlagen",
+                toast_clin_req: "Name und Region erforderlich",
+                toast_clin_ok: "Klinikinfo aktualisiert und veröffentlicht",
+                toast_clin_fail: "Speichern fehlgeschlagen",
+                toast_conn_fail: "Verbindung fehlgeschlagen",
+                lbl_ing: "Zutaten:",
+                lbl_good: "Gut für:",
+                lbl_avoid: "Vermeiden:",
+                btn_delete: "Löschen",
+                msg_no_rec: "Noch keine Rezepte. Fügen Sie Ihr erstes hinzu!",
+                msg_no_pub_rec: "Noch keine Rezepte von Ernährungsberatern 🌱",
+                msg_no_clin: "Noch keine Partnerkliniken in dieser Region 🏥",
+                msg_load_fail: "Laden fehlgeschlagen"
+            }
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'choose-eat-default';
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3Nicp-fpoSWQTIIXGH138ARRZ0v8qSi4",
+            authDomain: "choose-eat-care.firebaseapp.com",
+            projectId: "choose-eat-care",
+            storageBucket: "choose-eat-care.firebasestorage.app",
+            messagingSenderId: "111540943664",
+            appId: "1:111540943664:web:351a97c21dcab177ac66f5",
+            measurementId: "G-WT2HPP1LLZ"
+        };
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let firebaseApp, db, auth;
+        try {
+            firebaseApp = initializeApp(firebaseConfig);
+            db = getFirestore(firebaseApp);
+            auth = getAuth(firebaseApp);
+        } catch (e) {
+            console.error("Firebase init failed:", e);
+        }
+
+        window.state = {
+            user: null,
+            userId: null,
+            role: null,
+            profile: {},
+            geminiKey: localStorage.getItem('choose_eat_gemini_key') || '',
+            lang: localStorage.getItem('choose_eat_lang') || 'en'
+        };
+
+        // Helper to safely get current localized string
+        const t = (key) => dict[window.state.lang][key] || key;
+
+        window.ui = {
+            showLoader: () => document.getElementById('loading-screen').classList.remove('hidden'),
+            hideLoader: () => document.getElementById('loading-screen').classList.add('hidden'),
+            showSettings: () => {
+                document.getElementById('input-api-key').value = state.geminiKey;
+                document.getElementById('settings-modal').classList.remove('hidden');
+            },
+            hideSettings: () => document.getElementById('settings-modal').classList.add('hidden'),
+            toast: (msg, type = 'info') => {
+                const container = document.getElementById('toast-container');
+                const tEl = document.createElement('div');
+                const colors = type === 'error' ? 'bg-rose-50 text-rose-600 border-rose-200' : 
+                             type === 'success' ? 'bg-brand-50 text-brand-600 border-brand-200' : 
+                             'bg-white text-stone-700 border-stone-200';
+                tEl.className = `px-4 py-3 rounded-xl border shadow-lg animate-slide flex items-center gap-2 ${colors}`;
+                tEl.innerHTML = `<span>${type==='error'?'⚠️':type==='success'?'✅':'🔮'}</span><span class="text-sm font-medium">${msg}</span>`;
+                container.appendChild(tEl);
+                setTimeout(() => { tEl.style.opacity='0'; setTimeout(()=>tEl.remove(),300); }, 3000);
+            },
+            hideAllViews: () => {
+                ['view-role-selection', 'view-user-dashboard', 'view-dietitian-dashboard', 'view-clinic-dashboard'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+            },
+            switchUserTab: (tabId) => {
+                ['ai', 'profile', 'recipes', 'clinics'].forEach(id => {
+                    document.getElementById(`tab-btn-${id}`).classList.remove('active');
+                    document.getElementById(`tab-${id}`).classList.add('hidden');
+                });
+                document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+                document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+                
+                if (tabId === 'recipes') window.app.loadPublicRecipes();
+                if (tabId === 'clinics') window.app.loadPublicClinics();
+            },
+            showRecipeModal: () => document.getElementById('modal-recipe-form').classList.remove('hidden'),
+            hideRecipeModal: () => {
+                document.getElementById('modal-recipe-form').classList.add('hidden');
+                ['title', 'desc', 'ingredients', 'target', 'avoid', 'content'].forEach(id => {
+                    document.getElementById(`recipe-${id}`).value = '';
+                });
+            },
+            updateHeaderRole: () => {
+                const badge = document.getElementById('header-role-badge');
+                const headerInfo = document.getElementById('user-info-header');
+                if(!state.role) { headerInfo.classList.add('hidden'); return; }
+                headerInfo.classList.remove('hidden');
+                const rolesMap = { 
+                    'user': t('role_user') + ' 🥗', 
+                    'dietitian': t('role_diet') + ' 👩‍⚕️', 
+                    'clinic': t('role_clinic') + ' 🏥' 
+                };
+                badge.textContent = rolesMap[state.role] || 'Role';
+            }
+        };
+
+        window.app = {
+            changeLanguage: (lang) => {
+                state.lang = lang;
+                localStorage.setItem('choose_eat_lang', lang);
+                document.getElementById('language-selector').value = lang;
+                app.applyTranslations();
+                
+                // Refresh dynamically populated components to ensure new language is applied
+                if (state.role === 'dietitian') app.loadDietitianRecipes();
+                if (state.role === 'user') {
+                    app.loadPublicRecipes();
+                    app.loadPublicClinics();
+                }
+            },
+            
+            applyTranslations: () => {
+                const currentDict = dict[state.lang];
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (currentDict[key]) el.textContent = currentDict[key];
+                });
+                document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-ph');
+                    if (currentDict[key]) el.placeholder = currentDict[key];
+                });
+                ui.updateHeaderRole();
+            },
+
+            saveSettings: () => {
+                const key = document.getElementById('input-api-key').value.trim();
+                localStorage.setItem('choose_eat_gemini_key', key);
+                state.geminiKey = key;
+                ui.hideSettings();
+                ui.toast(t('toast_save_settings'), 'success');
+            },
+            
+            logout: async () => {
+                ui.showLoader();
+                await signOut(auth);
+                window.location.reload();
+            },
+
+            selectRole: async (role) => {
+                if (!state.userId) { ui.toast(t('toast_login_req'), 'error'); return; }
+                ui.showLoader();
+                try {
+                    const userRef = doc(db, 'artifacts', appId, 'users', state.userId, 'profile', 'data');
+                    let status = (role === 'dietitian' || role === 'clinic') ? 'approved' : 'active';
+                    
+                    const profileData = { role: role, status: status, updatedAt: Date.now() };
+                    await setDoc(userRef, profileData, { merge: true });
+                    state.role = role;
+                    state.profile = profileData;
+                    
+                    const roleName = role === 'user' ? t('role_user') : role === 'dietitian' ? t('role_diet') : t('role_clinic');
+                    ui.toast(`${t('toast_role_set')} ${roleName}`, 'success');
+                    window.app.routeUser();
+                } catch (e) {
+                    console.error("Save role error", e);
+                    ui.toast(t('toast_fail_role'), 'error');
+                }
+                ui.hideLoader();
+            },
+
+            routeUser: () => {
+                ui.hideAllViews();
+                ui.updateHeaderRole();
+                if (!state.role) {
+                    document.getElementById('view-role-selection').classList.remove('hidden');
+                } else if (state.role === 'user') {
+                    document.getElementById('view-user-dashboard').classList.remove('hidden');
+                    window.app.populateUserProfileForm();
+                } else if (state.role === 'dietitian') {
+                    document.getElementById('view-dietitian-dashboard').classList.remove('hidden');
+                    window.app.loadDietitianRecipes();
+                } else if (state.role === 'clinic') {
+                    document.getElementById('view-clinic-dashboard').classList.remove('hidden');
+                    window.app.loadClinicProfile();
+                }
+                ui.hideLoader();
+            },
+
+            showRoleSelection: () => {
+                ui.hideAllViews();
+                document.getElementById('view-role-selection').classList.remove('hidden');
+            },
+
+            populateUserProfileForm: () => {
+                const p = state.profile;
+                document.getElementById('prof-diseases').value = p.chronicDiseases || '';
+                document.getElementById('prof-allergies').value = p.allergies || '';
+                document.getElementById('prof-preferences').value = p.preferences || '';
+                document.getElementById('prof-notes').value = p.notes || '';
+            },
+            
+            saveUserProfile: async () => {
+                if (!state.userId) return;
+                ui.showLoader();
+                try {
+                    const data = {
+                        chronicDiseases: document.getElementById('prof-diseases').value.trim(),
+                        allergies: document.getElementById('prof-allergies').value.trim(),
+                        preferences: document.getElementById('prof-preferences').value.trim(),
+                        notes: document.getElementById('prof-notes').value.trim(),
+                        updatedAt: Date.now()
+                    };
+                    const userRef = doc(db, 'artifacts', appId, 'users', state.userId, 'profile', 'data');
+                    await setDoc(userRef, data, { merge: true });
+                    state.profile = { ...state.profile, ...data };
+                    ui.toast(t('toast_prof_up'), 'success');
+                } catch(e) {
+                    ui.toast(t('toast_fail_prof'), 'error');
+                }
+                ui.hideLoader();
+            },
+
+            generateDietPlan: async () => {
+                if (!state.geminiKey) {
+                    ui.toast(t('toast_api_req'), 'error');
+                    ui.showSettings();
+                    return;
+                }
+                const userInput = document.getElementById('ai-input').value.trim();
+                if (userInput.length < 5) {
+                    ui.toast(t('toast_ai_more'), 'error');
+                    return;
+                }
+
+                const btnText = document.getElementById('ai-btn-text');
+                const btnLoader = document.getElementById('ai-btn-loader');
+                btnText.textContent = t('ai_btn_loading');
+                btnLoader.classList.remove('hidden');
+
+                const p = state.profile;
+                const contextStr = `
+                    User Health Profile:
+                    - Chronic Diseases: ${p.chronicDiseases || 'None'}
+                    - Allergies: ${p.allergies || 'None'}
+                    - Dietary Preferences: ${p.preferences || 'None'}
+                    - Notes: ${p.notes || 'None'}
+                `;
+                
+                const systemPrompt = `
+                    You are a warm, healing, and professional AI diet assistant named "Choose Eat Care Assistant". 
+                    Your goal is to provide warm dietary suggestions and alternatives based on the user's health profile and what they want to eat today.
+                    
+                    STRICT RULES:
+                    1. AI Analyze Diet Risk: Evaluate the user's food choice against their health profile.
+                    2. Traffic Light System: Explain the risks using a Red, Yellow, and Green light system (🔴 Red: High Risk/Avoid, 🟡 Yellow: Moderate/Adjust, 🟢 Green: Safe/Go).
+                    3. 3-Meal Plan & Alternatives: Provide concrete adjustments and alternatives structured for three meals (Breakfast, Lunch, Dinner).
+                    4. Medical Disclaimer: Always remind the user to seek professional medical assistance if necessary (Do NOT diagnose or prescribe).
+                    5. Use an empathetic, warm tone and healing emojis (🌿, 🦋, ✨, 🥣).
+                    
+                    Please reply entirely in ${t('prompt_lang')}, and format using Markdown (headers, bold text, lists).
+                `;
+
+                try {
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${state.geminiKey}`;
+                    const payload = {
+                        contents: [{ parts: [{ text: `${contextStr}\nUser's current state/craving: ${userInput}` }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error('API Request Failed');
+                    
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    if (text) {
+                        const container = document.getElementById('ai-response-container');
+                        const contentDiv = document.getElementById('ai-response-content');
+                        
+                        let htmlContent = text
+                            .replace(/^### (.*$)/gim, '<h4 class="text-brand-600 font-bold mt-3 mb-1">$1</h4>')
+                            .replace(/^## (.*$)/gim, '<h3 class="text-brand-600 font-bold text-lg mt-4 mb-2">$1</h3>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="text-stone-800">$1</strong>')
+                            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                            .replace(/\n/g, '<br/>');
+                            
+                        contentDiv.innerHTML = htmlContent;
+                        container.classList.remove('hidden');
+                        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        ui.toast(t('toast_ai_done'), 'success');
+                    }
+                } catch (e) {
+                    console.error(e);
+                    ui.toast(t('toast_ai_fail'), 'error');
+                } finally {
+                    btnText.textContent = t('ai_btn_start');
+                    btnLoader.classList.add('hidden');
+                }
+            },
+
+            saveRecipe: async () => {
+                if (!state.userId) return;
+                const title = document.getElementById('recipe-title').value.trim();
+                const content = document.getElementById('recipe-content').value.trim();
+                if (!title || !content) { ui.toast(t('toast_req_title'), 'error'); return; }
+
+                ui.showLoader();
+                try {
+                    const recipesRef = collection(db, 'artifacts', appId, 'public', 'data', 'recipes');
+                    await addDoc(recipesRef, {
+                        authorId: state.userId,
+                        title,
+                        description: document.getElementById('recipe-desc').value.trim(),
+                        ingredients: document.getElementById('recipe-ingredients').value.trim(),
+                        targetDiseases: document.getElementById('recipe-target').value.trim(),
+                        avoidDiseases: document.getElementById('recipe-avoid').value.trim(),
+                        content,
+                        createdAt: Date.now()
+                    });
+                    ui.toast(t('toast_rec_pub'), 'success');
+                    ui.hideRecipeModal();
+                    window.app.loadDietitianRecipes(); 
+                } catch(e) {
+                    console.error(e);
+                    ui.toast(t('toast_fail_pub'), 'error');
+                }
+                ui.hideLoader();
+            },
+
+            loadDietitianRecipes: async () => {
+                if (!state.userId) return;
+                try {
+                    const recipesRef = collection(db, 'artifacts', appId, 'public', 'data', 'recipes');
+                    const snapshot = await getDocs(recipesRef);
+                    const myRecipes = snapshot.docs
+                        .map(d => ({id: d.id, ...d.data()}))
+                        .filter(r => r.authorId === state.userId)
+                        .sort((a,b) => b.createdAt - a.createdAt);
+                    
+                    const list = document.getElementById('dietitian-recipes-list');
+                    if (myRecipes.length === 0) {
+                        list.innerHTML = `<p class="text-stone-400 text-sm text-center">${t('msg_no_rec')}</p>`;
+                        return;
+                    }
+                    
+                    list.innerHTML = myRecipes.map(r => `
+                        <div class="border border-stone-100 p-4 rounded-xl hover:border-brand-200 transition-colors bg-white">
+                            <h4 class="font-bold text-stone-800">${r.title}</h4>
+                            <p class="text-xs text-stone-500 mt-1">${r.description || ''}</p>
+                            <div class="mt-2 flex flex-wrap gap-1">
+                                ${r.targetDiseases ? `<span class="px-2 py-0.5 bg-brand-50 text-brand-600 text-xs rounded-full border border-brand-100">${t('lbl_good')} ${r.targetDiseases}</span>` : ''}
+                                ${r.avoidDiseases ? `<span class="px-2 py-0.5 bg-rose-50 text-rose-600 text-xs rounded-full border border-rose-100">${t('lbl_avoid')} ${r.avoidDiseases}</span>` : ''}
+                            </div>
+                            <div class="mt-3 text-right">
+                                <button onclick="app.deleteRecipe('${r.id}')" class="text-xs text-rose-400 hover:text-rose-600">${t('btn_delete')}</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch(e) { console.error(e); }
+            },
+
+            deleteRecipe: async (docId) => {
+                ui.showLoader();
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'recipes', docId));
+                    ui.toast(t('toast_del_ok'), 'success');
+                    window.app.loadDietitianRecipes();
+                } catch(e) {
+                    ui.toast(t('toast_del_fail'), 'error');
+                }
+                ui.hideLoader();
+            },
+
+            loadPublicRecipes: async () => {
+                const list = document.getElementById('public-recipes-list');
+                list.innerHTML = '<div class="col-span-full text-center py-4"><div class="loader mx-auto"></div></div>';
+                try {
+                    const recipesRef = collection(db, 'artifacts', appId, 'public', 'data', 'recipes');
+                    const snapshot = await getDocs(recipesRef);
+                    let recipes = snapshot.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => b.createdAt - a.createdAt);
+                    
+                    if (recipes.length === 0) {
+                        list.innerHTML = `<div class="col-span-full text-center text-stone-400 py-8">${t('msg_no_pub_rec')}</div>`;
+                        return;
+                    }
+
+                    list.innerHTML = recipes.map(r => `
+                        <div class="vibe-card p-5 border border-stone-50 h-full flex flex-col">
+                            <h4 class="font-bold text-lg text-brand-600 mb-2">${r.title}</h4>
+                            <p class="text-sm text-stone-600 mb-3 flex-grow">${r.description || ''}</p>
+                            <div class="text-xs text-stone-500 bg-stone-50 p-2 rounded-lg mb-3">
+                                <strong>${t('lbl_ing')}</strong> ${r.ingredients || ''}
+                            </div>
+                            <div class="flex flex-wrap gap-1 mt-auto">
+                                ${r.targetDiseases ? `<span class="px-2 py-1 bg-brand-50 text-brand-600 text-[10px] rounded-full">✓ ${r.targetDiseases}</span>` : ''}
+                                ${r.avoidDiseases ? `<span class="px-2 py-1 bg-rose-50 text-rose-600 text-[10px] rounded-full">✕ ${r.avoidDiseases}</span>` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } catch(e) {
+                    list.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8">${t('msg_load_fail')}</div>`;
+                }
+            },
+
+            saveClinicProfile: async () => {
+                if (!state.userId) return;
+                const name = document.getElementById('clinic-name').value.trim();
+                const city = document.getElementById('clinic-city').value;
+                if (!name || !city) { ui.toast(t('toast_clin_req'), 'error'); return; }
+
+                ui.showLoader();
+                try {
+                    const clinicRef = doc(db, 'artifacts', appId, 'public', 'data', 'institutions', state.userId);
+                    await setDoc(clinicRef, {
+                        ownerId: state.userId,
+                        name,
+                        city,
+                        address: document.getElementById('clinic-address').value.trim(),
+                        phone: document.getElementById('clinic-phone').value.trim(),
+                        specialties: document.getElementById('clinic-specialties').value.trim(),
+                        hours: document.getElementById('clinic-hours').value.trim(),
+                        updatedAt: Date.now()
+                    });
+                    ui.toast(t('toast_clin_ok'), 'success');
+                } catch(e) {
+                    ui.toast(t('toast_clin_fail'), 'error');
+                }
+                ui.hideLoader();
+            },
+
+            loadClinicProfile: async () => {
+                if (!state.userId) return;
+                try {
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'institutions', state.userId);
+                    const snap = await getDoc(docRef);
+                    if (snap.exists()) {
+                        const d = snap.data();
+                        document.getElementById('clinic-name').value = d.name || '';
+                        document.getElementById('clinic-city').value = d.city || '';
+                        document.getElementById('clinic-address').value = d.address || '';
+                        document.getElementById('clinic-phone').value = d.phone || '';
+                        document.getElementById('clinic-specialties').value = d.specialties || '';
+                        document.getElementById('clinic-hours').value = d.hours || '';
+                    }
+                } catch(e) { console.error("Error loading clinic data", e); }
+            },
+
+            loadPublicClinics: async () => {
+                const list = document.getElementById('public-clinics-list');
+                const cityFilter = document.getElementById('clinic-city-filter').value;
+                
+                list.innerHTML = '<div class="col-span-full text-center py-4"><div class="loader mx-auto"></div></div>';
+                try {
+                    const instRef = collection(db, 'artifacts', appId, 'public', 'data', 'institutions');
+                    const snapshot = await getDocs(instRef);
+                    
+                    let clinics = snapshot.docs.map(d => d.data());
+                    if (cityFilter) {
+                        clinics = clinics.filter(c => c.city === cityFilter);
+                    }
+                    
+                    if (clinics.length === 0) {
+                        list.innerHTML = `<div class="col-span-full text-center text-stone-400 py-8">${t('msg_no_clin')}</div>`;
+                        return;
+                    }
+
+                    list.innerHTML = clinics.map(c => `
+                        <div class="vibe-card p-5 border border-stone-50 flex flex-col">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-bold text-lg text-stone-800">${c.name}</h4>
+                                <span class="px-2 py-1 bg-brand-50 text-brand-600 text-[10px] rounded-full whitespace-nowrap">${c.city}</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mb-1 flex items-center gap-2">📍 ${c.address || ''}</p>
+                            <p class="text-sm text-stone-600 mb-3 flex items-center gap-2">📞 ${c.phone || ''}</p>
+                            
+                            <div class="mt-auto">
+                                <div class="text-xs font-medium text-amber-600 bg-amber-50 p-2 rounded-lg inline-block">
+                                    ${c.specialties || ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch(e) {
+                    list.innerHTML = `<div class="col-span-full text-center text-rose-400 py-8">${t('msg_load_fail')}</div>`;
+                }
+            }
+        };
+
+        const initAuth = async () => {
+            ui.showLoader();
+            try {
+                let signedIn = false;
+                if (initialAuthToken) {
+                    try {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        signedIn = true;
+                    } catch (tokenError) {
+                        console.warn("Custom token login failed, falling back to anonymous:", tokenError);
+                    }
+                }
+                
+                if (!signedIn) {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        state.userId = user.uid;
+                        state.user = user;
+                        
+                        const userRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'data');
+                        const snap = await getDoc(userRef);
+                        
+                        if (snap.exists() && snap.data().role) {
+                            const data = snap.data();
+                            state.role = data.role;
+                            state.profile = data;
+                            window.app.routeUser();
+                        } else {
+                            ui.hideAllViews();
+                            document.getElementById('view-role-selection').classList.remove('hidden');
+                            ui.hideLoader();
+                        }
+                    } else {
+                        state.userId = null;
+                        state.role = null;
+                    }
+                });
+            } catch(e) {
+                console.error("Authentication Error", e);
+                ui.toast(t('toast_conn_fail'), 'error');
+                ui.hideLoader();
+            }
+        };
+
+        window.goHome = () => {
+             if(state.role) { window.app.routeUser(); }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('language-selector').value = state.lang;
+            app.applyTranslations();
+            
+            initAuth();
+            
+            document.getElementById('clinic-city-filter').addEventListener('change', () => {
+                window.app.loadPublicClinics();
+            });
+        });
+
+    </script>
+</body>
+</html>
